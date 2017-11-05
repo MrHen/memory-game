@@ -1,0 +1,66 @@
+#memory-container {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .card {
+    margin: 0.5rem;
+
+    height: 80px;
+    width: 80px;
+    line-height: 80px;
+
+    display: inline-block;
+    position: relative;
+
+    overflow: hidden;
+
+    perspective: 1000;
+    text-align: center;
+
+      transition: 0.2s 0.6s;
+  }
+
+  .card-container {
+      transition: 0.6s;
+      transform-style: preserve-3d;
+    transform: rotateY(180deg);
+
+      position: relative;
+  }
+
+  .card.revealed .card-container {
+    transform: rotateY(0deg);
+  }
+
+  .card .front,
+  .card .back {
+    border: 1px solid black;
+    border-radius: 5px;
+
+    height: 78px;
+    width: 78px;
+
+      backface-visibility: hidden;
+    position: absolute;
+  }
+
+  .card .front {
+      transition: opacity 0.3s 0.3s;
+
+    z-index: 2;
+      transform: rotateY(0deg);
+  }
+
+  .card.solved .front {
+    opacity: 0.5;
+  }
+
+  .card .back {
+      transform: rotateY(180deg);
+  }
+
+  .card.shuffling {
+    opacity: 0;
+  /*   transform: rotateY(0deg); */
+  }
