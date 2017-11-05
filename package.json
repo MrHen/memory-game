@@ -1,0 +1,45 @@
+{
+  "name": "memory-game",
+  "version": "1.0.0",
+  "description": "Simple memory game with TypeScript and Rollup Edit",
+  "main": "src/app.js",
+  "scripts": {
+    "clean": "gulp clean",
+    "build": "gulp build",
+    "test": "mocha *.spec.js",
+    "start": "gulp start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrHen/memory-game.git"
+  },
+  "author": "Adam Babcock",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrHen/memory-game/issues"
+  },
+  "homepage": "https://github.com/MrHen/memory-game#readme",
+  "devDependencies": {
+    "@types/d3": "^4.11.0",
+    "@types/express": "^4.0.39",
+    "@types/lodash": "^4.14.81",
+    "@types/lodash-es": "^4.17.0",
+    "@types/node": "^8.0.47",
+    "del": "^3.0.0",
+    "express": "^4.16.2",
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-nodemon": "^2.2.1",
+    "nodemon": "^1.12.1",
+    "rollup": "^0.50.0",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.8.0",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.1"
+  },
+  "dependencies": {
+    "d3": "^4.11.0",
+    "lodash": "^4.17.4",
+    "lodash-es": "^4.17.4"
+  }
+}
