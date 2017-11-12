@@ -2,7 +2,6 @@ const del = require('del');
 const gulp = require('gulp');
 const gulpNodemon = require('gulp-nodemon');
 const rollup = require('rollup');
-// const rollupCommonjs = require('rollup-plugin-commonjs');
 const rollupNodeResolve = require('rollup-plugin-node-resolve');
 const rollupTypescript = require('rollup-plugin-typescript2');
 
@@ -24,7 +23,6 @@ async function build() {
     input: 'src/main.ts',
     plugins: [
       rollupTypescript(/*{ plugin options }*/),
-      // rollupCommonjs(),
       rollupNodeResolve()
     ]
   });

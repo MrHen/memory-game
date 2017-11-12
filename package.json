@@ -7,7 +7,8 @@
     "clean": "gulp clean",
     "build": "gulp build",
     "test": "mocha *.spec.js",
-    "start": "gulp start"
+    "start": "gulp start",
+    "deploy": "git-directory-deploy --directory bld --branch gh-pages"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "@types/node": "^8.0.47",
     "del": "^3.0.0",
     "express": "^4.16.2",
+    "git-directory-deploy": "^1.5.1",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-nodemon": "^2.2.1",
     "nodemon": "^1.12.1",
