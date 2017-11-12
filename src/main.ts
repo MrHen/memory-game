@@ -14,7 +14,7 @@ type MemoryCardSelection = d3.Selection<MemoryCardElement, MemoryCard, MemoryCar
 export default function () {
   var config = {
     tick: 800,
-    size: 3,
+    size: 15,
     colors: d3.schemeCategory20,
     ids: {
       root: "#memory-container"
