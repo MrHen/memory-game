@@ -7917,6 +7917,9 @@ function shuffle$2(collection) {
   return func(collection);
 }
 
+// Bundle what we need from lodash manually since tree-shaking doesn't quite work
+// https://github.com/rollup/rollup/wiki/Troubleshooting#tree-shaking-doesnt-seem-to-be-working
+
 function buildGame(size) {
     var cards = range$1(size).map(function (d) {
         return [{
@@ -7977,12 +7980,10 @@ function isSolved(game) {
     return !reject(game, "solved").length;
 }
 
-// let foo = _.differenceBy;
-// console.log(!!foo);
 var main = function () {
     var config = {
         tick: 800,
-        size: 3,
+        size: 15,
         colors: category20,
         ids: {
             root: "#memory-container"
