@@ -1,32 +1,44 @@
 import * as d3 from 'd3';
-import * as _ from 'lodash-es';
+import * as _ from './lodash';
+
+import {
+  MemoryCard,
+  buildGame,
+  endTurn,
+  revealCard
+} from './state';
+
+type MemoryCardElement = d3.BaseType;
+type MemoryCardSelection = d3.Selection<MemoryCardElement, MemoryCard, MemoryCardElement, MemoryCard[] | undefined>;
 
 export default function () {
-  var tick = 800;
+  var config = {
+    tick: 800,
+    size: 3,
+    colors: d3.schemeCategory20,
+    ids: {
+      root: "#memory-container"
+    },
+    classes: {
+      back: "back",
+      card: 'card',
+      cardContainer: 'card-container',
+      front: "front",
+      solved: 'solved',
+      revealed: 'revealed',
+      shuffling: 'shuffling'
+    }
+  }
 
-  var size = 15;
-
-  var colors = d3.scaleOrdinal(d3.schemeCategory20);
+  var colors = d3.scaleOrdinal(config.colors);
   colors.range(_.shuffle(colors.range()));
 
-  var cards: MemoryCard[] = _.flatten(_.range(size).map(function (d) {
-    return [{
-      value: '' + d,
-      revealed: false,
-      solved: false
-    }, {
-      value: '' + d,
-      revealed: false,
-      solved: false
-    }]
-  }));
-
-  getSelection().call(build, cards);
+  var game = buildGame(config.size);
+  getSelection().call(build, game);
 
   function getSelection(): MemoryCardSelection {
-    return d3.select<HTMLDivElement, MemoryCard[]>("#memory-container")
-      .selectAll(".card")
-
+    return d3.select<HTMLDivElement, MemoryCard[]>(config.ids.root)
+      .selectAll(`.${config.classes.card}`)
   }
 
   function build(selection: MemoryCardSelection, data: MemoryCard[], delay: number) {
@@ -42,7 +54,9 @@ export default function () {
       d.revealed = false;
     });
 
-    selection.data(_.shuffle(data))
+    data = _.shuffle(data)
+
+    selection.data(data)
       .call(layout)
       .call(draw);
   }
@@ -50,23 +64,17 @@ export default function () {
   function layout(selection: MemoryCardSelection) {
     var added = selection.enter()
       .append("div")
-      .attr("class", "card")
-      .on("click", function (d: MemoryCard) {
-        if (!d.revealed) {
-          d.revealed = true;
-          d3.select<HTMLDivElement, MemoryCard>(<HTMLDivElement>this).call(draw);
-          getSelection().call(update); // TODO selection reference had to change when moving to d3 v4 but not sure why
-        }
-      })
+      .attr("class", config.classes.card)
+      .on("click", onClick)
       .append("div")
-      .attr("class", "card-container");
+      .attr("class", config.classes.cardContainer);
 
     added.append("div")
-      .attr("class", "front");
+      .attr("class", config.classes.front);
 
     added.append("div")
-      .attr("class", "back")
-      .style("background-color", colors('' + size))
+      .attr("class", config.classes.back)
+      .style("background-color", colors('' + config.size))
   }
 
   function draw(selection: MemoryCardSelection, delay: number) {
@@ -75,11 +83,11 @@ export default function () {
       return;
     }
 
-    selection.classed('solved', (d: MemoryCard) => d.solved)
-    selection.classed('revealed', (d: MemoryCard) => d.revealed)
-    selection.classed('shuffling', false)
+    selection.classed(config.classes.solved, (d: MemoryCard) => d.solved)
+    selection.classed(config.classes.revealed, (d: MemoryCard) => d.revealed)
+    selection.classed(config.classes.shuffling, false)
 
-    selection.select(".front")
+    selection.select(`.${config.classes.front}`)
       .text(function (d: MemoryCard) {
         return d.value;
       })
@@ -95,43 +103,35 @@ export default function () {
       return;
     }
 
-    selection.classed("shuffling", true);
+    selection.classed(config.classes.shuffling, true);
 
     // give the CSS animation time to finish
-    selection.call(build, null, tick);
+    selection.call(build, null, config.tick);
   }
+
+  function onClick(this: MemoryCardElement, card: MemoryCard) {
+    let selection = getSelection()
+    let move = revealCard(selection.data(), card);
+    if (move.success) {
+      // paint reveal immediately then check if we can end the turn
+      d3.select<MemoryCardElement, MemoryCard>(this).call(draw);
+
+      if (move.endTurn) {
+        selection.call(update);
+      }
+    }
+}
 
   function update(selection: MemoryCardSelection) {
-    var revealed: MemoryCard[] = _.filter(selection.data(), {
-      "revealed": true,
-      "solved": false
-    });
-
-    if (revealed.length <= 1) {
-      return;
-    }
-
-    if (revealed[0].value === revealed[1].value) {
-      revealed[0].solved = true;
-      revealed[1].solved = true;
+    var turn = endTurn(selection.data());
+    if (turn.match) {
       selection.call(draw);
     } else {
-      revealed[0].revealed = false;
-      revealed[1].revealed = false;
-      selection.call(draw, tick); // wait a tick before hiding a failed attempt
+      selection.call(draw, config.tick); // wait a tick before hiding a failed attempt
     }
 
-    var unsolved = _.reject(selection.data(), "solved");
-    if (!unsolved.length) {
-      selection.call(reset, tick); // wait a tick before reseting the whole board
+    if (turn.solved) {
+      selection.call(reset, config.tick); // wait a tick before reseting the whole board
     }
   }
 }
-
-interface MemoryCard {
-  value: string,
-  revealed: boolean,
-  solved: boolean
-}
-
-type MemoryCardSelection = d3.Selection<HTMLDivElement, MemoryCard, HTMLDivElement | null, MemoryCard[] | undefined>;
