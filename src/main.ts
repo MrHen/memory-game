@@ -15,7 +15,7 @@ export default function () {
   var config = {
     tick: 800,
     size: 15,
-    colors: d3.schemeCategory20,
+    colors: d3.schemeCategory10,
     ids: {
       root: "#memory-container"
     },
@@ -30,8 +30,8 @@ export default function () {
     }
   }
 
-  var colors = d3.scaleOrdinal(config.colors);
-  colors.range(_.shuffle(colors.range()));
+  var colors = d3.scaleSequential(d3.interpolateRainbow)
+    .domain([0, config.size])
 
   var game = buildGame(config.size);
   getSelection().call(build, game);
@@ -74,7 +74,7 @@ export default function () {
 
     added.append("div")
       .attr("class", config.classes.back)
-      .style("background-color", colors('' + config.size))
+      .style("background-color", colors(config.size))
   }
 
   function draw(selection: MemoryCardSelection, delay: number) {
@@ -92,7 +92,7 @@ export default function () {
         return d.value;
       })
       .style("background-color", function (d: MemoryCard) {
-        return colors(d.value);
+        return colors(+d.value);
       });
 
   }
