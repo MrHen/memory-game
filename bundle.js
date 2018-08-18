@@ -8824,7 +8824,7 @@ var MemoryGame = (function () {
           }
       };
       var colors = sequential(rainbow)
-          .domain([0, config.size]);
+          .domain([0, config.size + 1]);
       var game = buildGame(config.size);
       getSelection().call(build, game);
       function getSelection() {
