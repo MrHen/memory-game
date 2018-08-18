@@ -45,7 +45,9 @@ body {
     height: 78px;
     width: 78px;
 
-      backface-visibility: hidden;
+    /* https://stackoverflow.com/a/44316609/207247 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     position: absolute;
   }
 
