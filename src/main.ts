@@ -31,7 +31,7 @@ export default function () {
   }
 
   var colors = d3.scaleSequential(d3.interpolateRainbow)
-    .domain([0, config.size])
+    .domain([0, config.size + 1])
 
   var game = buildGame(config.size);
   getSelection().call(build, game);
